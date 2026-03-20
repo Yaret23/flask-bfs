@@ -2,7 +2,7 @@ from flask import Flask, request, render_template
 import sys
 import os
 
-# Asegurar que encuentre BFS
+# Asegurar ruta
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from BFS import buscar_solucion_BFS
@@ -11,8 +11,8 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    inicial = "4,2,3,1"
-    solucion = "1,2,3,4"
+    inicial = "CDMX"
+    solucion = "GDL"
     error = None
     resultado = None
     no_solucion = False
@@ -23,30 +23,15 @@ def index():
         solucion = request.form.get('solucion', '')
 
         try:
-            inicial_list = [int(x.strip()) for x in inicial.split(',')]
-            solucion_list = [int(x.strip()) for x in solucion.split(',')]
+            resultado = buscar_solucion_BFS(inicial, solucion)
 
-            if len(inicial_list) != 4 or len(solucion_list) != 4:
-                error = "Ambos estados deben tener exactamente 4 elementos."
+            if resultado is None:
+                no_solucion = True
             else:
-                nodo_solucion = buscar_solucion_BFS(inicial_list, solucion_list)
+                pasos = len(resultado) - 1
 
-                if nodo_solucion is None:
-                    no_solucion = True
-                else:
-                    resultado = []
-                    nodo = nodo_solucion
-
-                    while nodo.get_padre() is not None:
-                        resultado.append(nodo.get_datos())
-                        nodo = nodo.get_padre()
-
-                    resultado.append(inicial_list)
-                    resultado.reverse()
-                    pasos = len(resultado) - 1
-
-        except ValueError:
-            error = "Entrada inválida. Usa números separados por comas."
+        except Exception as e:
+            error = str(e)
 
     return render_template(
         'index2.html',
@@ -58,6 +43,5 @@ def index():
         pasos=pasos
     )
 
-# 🔥 IMPORTANTE PARA RENDER
 if __name__ == "__main__":
     app.run()
