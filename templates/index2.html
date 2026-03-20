@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Visualizador BFS - Puzzle Lineal</title>
+    <link rel="stylesheet" href="/static/style2.css?v=1">
+</head>
+<body>
+    <div class="container">
+        <h1>Visualizador BFS - Puzzle Lineal</h1>
+        <p>Ingresa los estados inicial y solución (4 números separados por comas, ej: 4,2,3,1).</p>
+        <form method="post">
+            <label>Estado Inicial:</label><br>
+            <input type="text" name="inicial" value="{{ inicial }}" required><br>
+            <label>Estado Solución:</label><br>
+            <input type="text" name="solucion" value="{{ solucion }}" required><br>
+            <button type="submit">Ejecutar BFS</button>
+        </form>
+        {% if error %}
+            <div class="alert error">{{ error }}</div>
+        {% endif %}
+        {% if resultado %}
+            <div class="resultado">
+                <h2>¡Solución encontrada en {{ pasos }} pasos!</h2>
+                <h3>Camino:</h3>
+                {% for estado in resultado %}
+                    <div class="paso">Paso {{ loop.index0 }}: {{ estado }}</div>
+                {% endfor %}
+            </div>
+        {% elif no_solucion %}
+            <div class="alert warning">No se encontró solución.</div>
+        {% endif %}
+    </div>
+</body>
+</html>
